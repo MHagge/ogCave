@@ -50,7 +50,7 @@ class Event
     /// </summary>
     private void addDefaultOption()
     {
-        options.Add(new EventOption("ok", new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
+        options.Add(new EventOption("Ok", new float[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
     }
 
 
