@@ -36,7 +36,7 @@ public class Manager : MonoBehaviour {
         eventQueue = new List<Event>();
 
         //populate initial events
-        availableEvents.Add(new Event());
+        availableEvents.Add(new Event("Farm House Burns Down", "A fire burned down the farm house!", new EventOption[] { new EventOption("Oh no!", new float[] { 0, 0, -50f, 0, 0, 0, 0, -1f, 0, 0 }), new EventOption("We must rebuild!", new float[] { 0, -100f, 0, 0, 0, 0, 0, 0, 0, 0 }) }));
 
         //initialize timer
         timer = 0;
