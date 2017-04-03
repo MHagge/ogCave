@@ -2,8 +2,15 @@
 class EventOption
 {
     private string text;
-
+    public string Text
+    {
+        get { return text; }
+    }
     private float[] resourceEffects;
+    public float[] ResourceEffects
+    {
+        get { return resourceEffects; }
+    }
 
     /// <summary>
     /// Creates an event option
