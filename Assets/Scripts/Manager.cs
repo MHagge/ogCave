@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,9 +22,9 @@ public class Manager : MonoBehaviour {
     
     //timer
     public int hour;
-    public int timer;
+    private static System.Timers.Timer timer;
     private bool endOfDay;
-    private bool timerPaused;
+    private bool eventActive;
 
     //UI canvas reference
     public Canvas canvas;
@@ -43,50 +44,50 @@ public class Manager : MonoBehaviour {
         availableEvents.Add(new Event("Noises In The Forest", "The hunters have reported strange noises from the forest and are becoming uneasy.", new EventOption[] { new EventOption("Send parties to investigate.", new ResourceDetail(new ResourceList(0,-30,0,0,0),new ResourceList())), new EventOption("It's probably nothing.", new ResourceDetail(new ResourceList(),new ResourceList(0,-1,-1,0,0))) }));
 
         //initialize timer
-        timer = 0;
+        timer = new System.Timers.Timer(1000);
+        timer.AutoReset = true;
+        timer.Start();
+        timer.Elapsed += TimerEvents;
         hour = 6; //6am - 12am? (6 - 24)
         endOfDay = false;
-        timerPaused = false;
+        eventActive = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (!endOfDay && !timerPaused)
+        UpdateUI();
+
+        //cheaty event spawning
+        if (hour == 9 && !eventActive)
         {
-            timer++;
-
-            //check if 3 seconds have passed
-            if (timer % 180 == 0)
-            {
-                //increment hour
-                hour++;
-
-                //resource income
-                resources.current = resources.current + resources.change;
-
-                //cheaty event spawning
-                if (hour == 9)
-                {
-                    SetEvent();
-                    timerPaused = true;
-                }
-
-                if (hour == 15)
-                {
-                    SetEvent();
-                    timerPaused = true;
-                }
-
-                if (hour == 24)
-                {
-                    EndOfDay();
-                }
-            }
-
-            //update the UI
-            UpdateUI();
+            eventActive = true;
+            SetEvent();
+            timer.Stop();
         }
-	}
+
+        if (hour == 15 && !eventActive)
+        {
+            eventActive = true;
+            SetEvent();
+            timer.Stop();
+        }
+
+        if (hour == 24)
+        {
+            EndOfDay();
+        }
+    }
+
+    void TimerEvents(object source, ElapsedEventArgs e)
+    {
+        if (!endOfDay)
+        {
+            hour++;
+            //resource income
+            resources.current = resources.current + resources.change;
+            
+        }
+    }
 
     //updates the UI elements that need to be updated
     void UpdateUI()
@@ -104,6 +105,9 @@ public class Manager : MonoBehaviour {
         //set endOfDay to true
         endOfDay = true;
 
+        // set time to 0
+        hour = 0;
+
         //move end of day message to screen
         GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(320f, 260f, 0);
     }
@@ -112,7 +116,7 @@ public class Manager : MonoBehaviour {
     Event GetEvent()
     {
         //gets a random index
-        int randomEvent = (int)(Random.value * availableEvents.Count);
+        int randomEvent = (int)(Mathf.Floor(Random.value * availableEvents.Count));
 
         //save it to a temp holder
         Event returnEvent = availableEvents[randomEvent];
@@ -153,6 +157,12 @@ public class Manager : MonoBehaviour {
         this.resources = this.resources + resourceUpdate;
 
         //unpause
-        timerPaused = false;
+        timer.Start();
+
+        // hack to get by update calling multiple events per hour
+        hour++;
+
+        // restart loop
+        eventActive = false;
     }
 }
