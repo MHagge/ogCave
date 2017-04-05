@@ -1,4 +1,4 @@
-﻿struct ResourceList
+﻿public struct ResourceList
 {
     public float population;
     public float money;
@@ -27,14 +27,14 @@
 
 }
 
-struct ResourceDetail
+public struct ResourceDetail
 {
     public ResourceList current;
     public ResourceList change;
 
-    public ResourceDetail(ResourceList curr, ResourceList change)
+    public ResourceDetail(ResourceList current, ResourceList change)
     {
-        this.current = curr;
+        this.current = current;
         this.change = change;
     }
     public static ResourceDetail operator +(ResourceDetail lhs, ResourceDetail rhs)

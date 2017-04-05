@@ -16,9 +16,8 @@ public class Manager : MonoBehaviour {
     private Event activeEvent;
 
     //Store
-
     private Store store;
-    
+
     //timer
     public int hour;
     public int timer;
@@ -41,6 +40,10 @@ public class Manager : MonoBehaviour {
         //populate initial events
         availableEvents.Add(new Event("Farm House Burns Down", "A fire burned down the farm house!", new EventOption[] { new EventOption("Oh no!", new ResourceDetail(new ResourceList(0,0,-50,0,0),new ResourceList(0,0,-1,0,0))), new EventOption("We must rebuild!", new ResourceDetail(new ResourceList(0,-100,0,0,0), new ResourceList())) }));
         availableEvents.Add(new Event("Noises In The Forest", "The hunters have reported strange noises from the forest and are becoming uneasy.", new EventOption[] { new EventOption("Send parties to investigate.", new ResourceDetail(new ResourceList(0,-30,0,0,0),new ResourceList())), new EventOption("It's probably nothing.", new ResourceDetail(new ResourceList(),new ResourceList(0,-1,-1,0,0))) }));
+
+        //initialize Shop
+        store = new Store();
+        store.AddStock(new Item("Farm", "A farm capable of growing crops", new ResourceDetail(new ResourceList(0,-100,-10,0,0), new ResourceList(0,0,1,0,0))));
 
         //initialize timer
         timer = 0;
