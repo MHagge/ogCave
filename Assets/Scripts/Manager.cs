@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Manager : MonoBehaviour {
     //resources
-    Dictionary<string, float> resources = new Dictionary<string, float>();
+    ResourceDetail resources;
 
     //List of available Events
     List<Event> availableEvents;
@@ -15,6 +15,10 @@ public class Manager : MonoBehaviour {
 
     private Event activeEvent;
 
+    //Store
+
+    private Store store;
+    
     //timer
     public int hour;
     public int timer;
@@ -26,17 +30,8 @@ public class Manager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        // initial values for resources
-        resources.Add("pop", 0);
-        resources.Add("money", 0);
-        resources.Add("food", 0);
-        resources.Add("panic", 0);
-        resources.Add("trust", 0);
-        resources.Add("cPop", 10.0f);
-        resources.Add("cMoney", 10.0f);
-        resources.Add("cFood", 10.0f);
-        resources.Add("cPanic", 0.0f);
-        resources.Add("cTrust", 0.0f);
+        // initial values for resources 
+        resources = new ResourceDetail(new ResourceList(0, 0, 0, 0, 0), new ResourceList(10, 10, 10, 0, 0));
 
         //initialize lists
         availableEvents = new List<Event>();
@@ -44,8 +39,8 @@ public class Manager : MonoBehaviour {
         activeEvent = new Event("", "", new EventOption[] { });
 
         //populate initial events
-        availableEvents.Add(new Event("Farm House Burns Down", "A fire burned down the farm house!", new EventOption[] { new EventOption("Oh no!", new float[] { 0, 0, -50f, 0, 0, 0, 0, -1f, 0, 0 }), new EventOption("We must rebuild!", new float[] { 0, -100f, 0, 0, 0, 0, 0, 0, 0, 0 }) }));
-        availableEvents.Add(new Event("Noises In The Forest", "The hunters have reported strange noises from the forest and are becoming uneasy.", new EventOption[] { new EventOption("Send parties to investigate.", new float[] { 0, -30f, 0, 0, 0, 0, 0, 0, 0, 0 }), new EventOption("It's probably nothing.", new float[] { 0, 0, 0, 0, 0, 0, -1f, -1f, 0, 0 }) }));
+        availableEvents.Add(new Event("Farm House Burns Down", "A fire burned down the farm house!", new EventOption[] { new EventOption("Oh no!", new ResourceDetail(new ResourceList(0,0,-50,0,0),new ResourceList(0,0,-1,0,0))), new EventOption("We must rebuild!", new ResourceDetail(new ResourceList(0,-100,0,0,0), new ResourceList())) }));
+        availableEvents.Add(new Event("Noises In The Forest", "The hunters have reported strange noises from the forest and are becoming uneasy.", new EventOption[] { new EventOption("Send parties to investigate.", new ResourceDetail(new ResourceList(0,-30,0,0,0),new ResourceList())), new EventOption("It's probably nothing.", new ResourceDetail(new ResourceList(),new ResourceList(0,-1,-1,0,0))) }));
 
         //initialize timer
         timer = 0;
@@ -67,9 +62,7 @@ public class Manager : MonoBehaviour {
                 hour++;
 
                 //resource income
-                resources["pop"] += resources["cPop"];
-                resources["money"] += resources["cMoney"];
-                resources["food"] += resources["cFood"];
+                resources.current = resources.current + resources.change;
 
                 //cheaty event spawning
                 if (hour == 9)
@@ -102,7 +95,7 @@ public class Manager : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Time").GetComponent<Text>().text = hour + ":00";
 
         //update resource values
-        GameObject.FindGameObjectWithTag("Resources").GetComponent<Text>().text = "Population: " + resources["pop"] + "     Food: " + resources["food"] + "    Money: " + resources["money"];
+        GameObject.FindGameObjectWithTag("Resources").GetComponent<Text>().text = "Population: " + resources.current.population + "     Food: " + resources.current.food + "    Money: " + resources.current.money;
     }
 
     //ends the day
@@ -156,17 +149,8 @@ public class Manager : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(740f, 260f, 0);
 
         //quick and dirty resource updating from event
-        float[] resourceUpdate = activeEvent.getOption(index).ResourceEffects;
-        resources["pop"] += resourceUpdate[0];
-        resources["money"] += resourceUpdate[1];
-        resources["food"] += resourceUpdate[2];
-        resources["panic"] += resourceUpdate[3];
-        resources["trust"] += resourceUpdate[4];
-        resources["cPop"] += resourceUpdate[5];
-        resources["cMoney"] += resourceUpdate[6];
-        resources["cFood"] += resourceUpdate[7];
-        resources["cPanic"] += resourceUpdate[8];
-        resources["cTrust"] += resourceUpdate[9];
+        ResourceDetail resourceUpdate = activeEvent.getOption(index).ResourceEffects;
+        this.resources = this.resources + resourceUpdate;
 
         //unpause
         timerPaused = false;

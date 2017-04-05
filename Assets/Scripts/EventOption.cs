@@ -6,8 +6,8 @@ class EventOption
     {
         get { return text; }
     }
-    private float[] resourceEffects;
-    public float[] ResourceEffects
+    private ResourceDetail resourceEffects;
+    public ResourceDetail ResourceEffects
     {
         get { return resourceEffects; }
     }
@@ -17,7 +17,7 @@ class EventOption
     /// </summary>
     /// <param name="text">the option text</param>
     /// <param name="resourceEffects">the option resource effects</param>
-    public EventOption(string text, float[] resourceEffects)
+    public EventOption(string text, ResourceDetail resourceEffects)
     {
         this.text = text;
         this.resourceEffects = resourceEffects;
