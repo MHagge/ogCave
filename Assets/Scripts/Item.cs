@@ -7,7 +7,7 @@ using System.Text;
 public class Item
 {
     private string name;
-    public string Name { get; set; }
+    public string Name { get { return name; } }
     private string description;
     public string Description { get; set; }
     private ResourceDetail effect;
