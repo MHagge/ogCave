@@ -24,14 +24,16 @@ public class Manager : MonoBehaviour {
     private static System.Timers.Timer timer;
     private bool endOfDay;
     private bool eventActive;
+    private bool storeIsOpen;
+    private int moneyStoreCount;
+    private int foodStoreCount;
 
     //UI canvas reference
-    public Canvas canvas;
 
 	// Use this for initialization
 	void Start () {
         // initial values for resources 
-        resources = new ResourceDetail(new ResourceList(0, 0, 0, 0, 0), new ResourceList(10, 10, 10, 0, 0));
+        resources = new ResourceDetail(new ResourceList(100, 0, 0, 0, 0), new ResourceList(0, 10, 10, 0, 0));
 
         //initialize lists
         availableEvents = new List<Event>();
@@ -54,6 +56,9 @@ public class Manager : MonoBehaviour {
         hour = 6; //6am - 12am? (6 - 24)
         endOfDay = false;
         eventActive = false;
+        storeIsOpen = false;
+
+        foodStoreCount = moneyStoreCount = (int)resources.current.population / 2;
 	}
 	
 	// Update is called once per frame
@@ -83,7 +88,7 @@ public class Manager : MonoBehaviour {
 
     void TimerEvents(object source, ElapsedEventArgs e)
     {
-        if (!endOfDay)
+        if (!endOfDay && !storeIsOpen)
         {
             hour++;
             //resource income
@@ -147,13 +152,13 @@ public class Manager : MonoBehaviour {
         }
 
         //move the event prefab into view
-        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(320f, 260f, 0);
+        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
     }
 
     public void ButtonClick(int index)
     {
         //reset position of event
-        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(740f, 260f, 0);
+        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, -20, 0);
 
         //quick and dirty resource updating from event
         ResourceDetail resourceUpdate = activeEvent.getOption(index).ResourceEffects;
@@ -167,5 +172,67 @@ public class Manager : MonoBehaviour {
 
         // restart loop
         eventActive = false;
+    }
+
+    public void StoreClick()
+    {
+        if (storeIsOpen)
+        {
+            storeIsOpen = false;
+            GameObject.FindGameObjectWithTag("StoreWrapper").GetComponent<RectTransform>().position = new Vector3(512f, -20f, 0);
+            timer.Start();
+        }
+        else
+        {
+            storeIsOpen = true;
+            GameObject.FindGameObjectWithTag("StoreWrapper").GetComponent<RectTransform>().position = new Vector3(512f, 384f, 0);
+            timer.Stop();
+        }
+    }
+
+    public void StoreTaskAdd(int moneyOrFood)
+    {
+        if (moneyOrFood == 0) //money
+        {
+            float moneyTask = float.Parse(GameObject.FindGameObjectWithTag("MoneyStoreCount").GetComponent<Text>().text);
+            GameObject.FindGameObjectWithTag("MoneyStoreCount").GetComponent<Text>().text = (moneyTask + 1).ToString();
+            resources.change.money = moneyTask / 5.0f;
+        }
+        else
+        {
+            float foodTask = float.Parse(GameObject.FindGameObjectWithTag("foodStoreCount").GetComponent<Text>().text);
+            GameObject.FindGameObjectWithTag("FoodStoreCount").GetComponent<Text>().text = (foodTask + 1).ToString();
+            resources.change.food = foodTask / 5.0f;
+        }
+    }
+
+    public void StoreTaskSub(int moneyOrFood)
+    {
+        if (moneyOrFood == 0) //money
+        {
+            float moneyTask = float.Parse(GameObject.FindGameObjectWithTag("MoneyStoreCount").GetComponent<Text>().text);
+            GameObject.FindGameObjectWithTag("MoneyStoreCount").GetComponent<Text>().text = (moneyTask - 1).ToString();
+            resources.change.money = moneyTask / 5.0f;
+        }
+        else
+        {
+            float foodTask = float.Parse(GameObject.FindGameObjectWithTag("foodStoreCount").GetComponent<Text>().text);
+            GameObject.FindGameObjectWithTag("FoodStoreCount").GetComponent<Text>().text = (foodTask - 1).ToString();
+            resources.change.food = foodTask / 5.0f;
+        }
+    }
+
+    public void FoodBuySell(bool buy)
+    {
+        if (buy)
+        {
+            resources.current.food += 1;
+            resources.current.money -= 1;
+        }
+        else
+        {
+            resources.current.food -= 1;
+            resources.current.money += 1;
+        }
     }
 }
