@@ -24,6 +24,7 @@ public class Manager : MonoBehaviour {
     private static System.Timers.Timer timer;
     private bool endOfDay;
     private bool eventActive;
+    private bool endOfGame;
     private bool storeIsOpen;
     private int moneyStoreCount;
     private int foodStoreCount;
@@ -57,6 +58,7 @@ public class Manager : MonoBehaviour {
         endOfDay = false;
         eventActive = false;
         storeIsOpen = false;
+        endOfGame = false;
 
         foodStoreCount = moneyStoreCount = (int)resources.current.population / 2;
 	}
@@ -84,6 +86,11 @@ public class Manager : MonoBehaviour {
         {
             EndOfDay();
         }
+
+        if (resources.current.population <= 0 || resources.current.panic >= 100)
+        {
+            GameEnd();
+        }
     }
 
     void TimerEvents(object source, ElapsedEventArgs e)
@@ -93,7 +100,19 @@ public class Manager : MonoBehaviour {
             hour++;
             //resource income
             resources.current = resources.current + resources.change;
+
+            if (resources.current.food < 0 || resources.current.money < 0)
+            {
+                resources.current.panic += 1;
+            }
             
+        }
+
+        if (endOfDay)
+        {
+            endOfDay = false;
+
+            GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(512f, -20, 0);
         }
     }
 
@@ -102,6 +121,10 @@ public class Manager : MonoBehaviour {
     {
         //update timer
         GameObject.FindGameObjectWithTag("Time").GetComponent<Text>().text = hour + ":00";
+
+        //update panic meter
+        Debug.Log(GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.x);
+        GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax = new Vector2(-200 + (resources.current.panic * 2), GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.y);
 
         //update resource values
         GameObject.FindGameObjectWithTag("Resources").GetComponent<Text>().text = "Population: " + resources.current.population + "     Food: " + resources.current.food + "    Money: " + resources.current.money;
@@ -117,20 +140,20 @@ public class Manager : MonoBehaviour {
         hour = 0;
 
         //move end of day message to screen
-        GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(320f, 260f, 0);
+        GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
     }
 
     //get's a random event from the list, removes from available, adds to queue
     Event GetEvent()
     {
         //gets a random index
-        int randomEvent = (int)(Mathf.Floor(Random.value * availableEvents.Count));
+        //int randomEvent = (int)(Mathf.Floor(Random.value * availableEvents.Count));
 
         //save it to a temp holder
-        Event returnEvent = availableEvents[randomEvent];
+        Event returnEvent = availableEvents[0];
 
         //remove from available, add to queue
-        availableEvents.RemoveAt(randomEvent);
+        availableEvents.RemoveAt(0);
         eventQueue.Add(activeEvent);
 
         return returnEvent;
@@ -152,7 +175,7 @@ public class Manager : MonoBehaviour {
         }
 
         //move the event prefab into view
-        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
+        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, 500f, 0);
     }
 
     public void ButtonClick(int index)
@@ -234,5 +257,10 @@ public class Manager : MonoBehaviour {
             resources.current.food -= 1;
             resources.current.money += 1;
         }
+    }
+
+    public void GameEnd()
+    {
+        endOfGame = true;
     }
 }
