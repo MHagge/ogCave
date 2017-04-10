@@ -87,7 +87,7 @@ public class Manager : MonoBehaviour {
             EndOfDay();
         }
 
-        if (resources.current.population <= 0 || resources.current.panic >= 100)
+        if (resources.current.population <= 0 || resources.current.panic >= 100 || availableEvents.Count == 0)
         {
             GameEnd();
         }
@@ -262,5 +262,14 @@ public class Manager : MonoBehaviour {
     public void GameEnd()
     {
         endOfGame = true;
+
+        if (availableEvents.Count == 0) //you win
+        {
+            GameObject.FindGameObjectWithTag("YouWin").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
+        }
+        else //you lose
+        {
+            GameObject.FindGameObjectWithTag("YouLose").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
+        }
     }
 }
