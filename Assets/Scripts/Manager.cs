@@ -8,9 +8,11 @@ public class Manager : MonoBehaviour
 {
     //resources
     ResourceDetail resources;
+    public float panic;
 
     //List of available Events
     List<Event> availableEvents;
+    public int count;
 
     //Event Queue
     List<Event> eventQueue;
@@ -32,6 +34,7 @@ public class Manager : MonoBehaviour
 
     public GameObject choice1;
     public GameObject choice2;
+    public RectTransform endDayText;
 
     //UI canvas reference
 
@@ -102,11 +105,7 @@ new EventOption("Hand out ghost wards and tell people to sprinkle salt around th
         availableEvents.Add(new Event("Too spooky for them", "The ghost stories are causing panic. People are hearing the voices of their dead loved ones. Some even claim to hear the voice of the dead mayor.  They say the the dead mayor is telling them that he was attacked by malicious spirits in the cave.  ", new EventOption[] {new EventOption("Have the village priest to perform from a exorcism?",new ResourceDetail(new ResourceList(0,0,0,-.1f,-.1f),new ResourceList(0,0,0,0,0))),
 new EventOption("Sacrifice a small herd to cattle to the spirits and ask them to please leave.",new ResourceDetail(new ResourceList(0,0,-20,-.4f,-.2f),new ResourceList(0,0,0,0,0))),
 new EventOption("Try again to assure the villagers that ghosts and spirits are not real.",new ResourceDetail(new ResourceList(0,0,0,0,.2f),new ResourceList(0,0,0,0,0)))}));
-
-
-
-
-
+        
         //availableEvents.Add(new Event("Farm House Burns Down", "A fire burned down the farm house!", new EventOption[] { new EventOption("Oh no!", new ResourceDetail(new ResourceList(0, 0, -50, 0, 0), new ResourceList(0, 0, -1, 0, 0))), new EventOption("We must rebuild!", new ResourceDetail(new ResourceList(0, -100, 0, 0, 0), new ResourceList())) }));
        // availableEvents.Add(new Event("Noises In The Forest", "The hunters have reported strange noises from the forest and are becoming uneasy.", new EventOption[] { new EventOption("Send parties to investigate.", new ResourceDetail(new ResourceList(0, -30, 0, 0, 0), new ResourceList())), new EventOption("It's probably nothing.", new ResourceDetail(new ResourceList(), new ResourceList(0, -1, -1, 0, 0))) }));
 
@@ -132,23 +131,25 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
     void Update()
     {
         UpdateUI();
+        count = availableEvents.Count;
+        panic = resources.current.panic;
 
         //cheaty event spawning
-        if (hour == 9 && !eventActive)
+        if (hour == 9 && !eventActive && !endOfGame)
         {
             eventActive = true;
             SetEvent();
             timer.Stop();
         }
 
-        if (hour == 15 && !eventActive)
+        if (hour == 15 && !eventActive && !endOfGame)
         {
             eventActive = true;
             SetEvent();
             timer.Stop();
         }
 
-        if (hour == 24)
+        if (hour == 22)
         {
             EndOfDay();
         }
@@ -161,7 +162,7 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
 
     void TimerEvents(object source, ElapsedEventArgs e)
     {
-        if (!endOfDay && !storeIsOpen)
+        if (!endOfDay && !storeIsOpen && !endOfGame)
         {
             hour++;
             //resource income
@@ -177,8 +178,6 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
         if (endOfDay)
         {
             endOfDay = false;
-
-            GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(512f, -20, 0);
         }
     }
 
@@ -190,10 +189,16 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
 
         //update panic meter
         //Debug.Log(GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.x);
-        GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax = new Vector2(-200 + (resources.current.panic * 2), GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.y);
+        GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax = new Vector2(-200 + (resources.current.panic * 20), GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.y);
 
         //update resource values
         GameObject.FindGameObjectWithTag("Resources").GetComponent<Text>().text = "Population: " + resources.current.population + "     Food: " + resources.current.food + "    Money: " + resources.current.money;
+
+        //not allowed to be put in timer
+        if (!endOfDay)
+        {
+            endDayText.position = new Vector3(512f, -20, 0);
+        }
     }
 
     //ends the day
@@ -203,10 +208,10 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
         endOfDay = true;
 
         // set time to 0
-        hour = 0;
+        hour = 6;
 
         //move end of day message to screen
-        GameObject.FindGameObjectWithTag("EndOfDay").GetComponent<RectTransform>().position = new Vector3(512f, 450f, 0);
+        endDayText.position = new Vector3(512f, 450f, 0);
     }
 
     //get's a random event from the list, removes from available, adds to queue
