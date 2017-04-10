@@ -30,6 +30,9 @@ public class Manager : MonoBehaviour
     private int moneyStoreCount;
     private int foodStoreCount;
 
+    public GameObject choice1;
+    public GameObject choice2;
+
     //UI canvas reference
 
     // Use this for initialization
@@ -186,7 +189,7 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
         GameObject.FindGameObjectWithTag("Time").GetComponent<Text>().text = hour + ":00";
 
         //update panic meter
-        Debug.Log(GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.x);
+        //Debug.Log(GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.x);
         GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax = new Vector2(-200 + (resources.current.panic * 2), GameObject.FindGameObjectWithTag("PanicBar").GetComponent<RectTransform>().offsetMax.y);
 
         //update resource values
@@ -237,14 +240,27 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
             GameObject.Find("Choice" + i).gameObject.GetComponentInChildren<Text>().text = activeEvent.getOption(i).Text;
         }
 
+        Debug.Log(activeEvent.OptionCount);
+        if (activeEvent.OptionCount < 3)
+        {
+            choice2.gameObject.SetActive(false);
+
+            if (activeEvent.OptionCount == 1)
+            {
+                choice1.gameObject.SetActive(false);
+            }
+        }
+
         //move the event prefab into view
-        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, 500f, 0);
+        GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, 550f, 0);
     }
 
     public void ButtonClick(int index)
     {
         //reset position of event
         GameObject.FindGameObjectWithTag("Event").GetComponent<RectTransform>().position = new Vector3(512f, -20, 0);
+        choice1.gameObject.SetActive(true);
+        choice2.gameObject.SetActive(true);
 
         //quick and dirty resource updating from event
         ResourceDetail resourceUpdate = activeEvent.getOption(index).ResourceEffects;
