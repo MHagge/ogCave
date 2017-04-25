@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
+
+    //usefule stuff
+    private float sWidth;
+    private float sHeight;
+
+    public Camera cam;
     //resources
     ResourceDetail resources;
     public float panic;
@@ -48,6 +54,9 @@ public class Manager : MonoBehaviour
         availableEvents = new List<Event>();
         eventQueue = new List<Event>();
         activeEvent = new Event("", "", new EventOption[] { });
+
+        sHeight = 2f * cam.orthographicSize / 2f;
+        sWidth = sHeight * cam.aspect / 2f;
 
 
         //populate initial events
@@ -197,7 +206,7 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
         //not allowed to be put in timer
         if (!endOfDay)
         {
-            endDayText.position = new Vector3(512f, -20, 0);
+            endDayText.position = new Vector3(sWidth, -20, 0);
         }
     }
 
@@ -211,7 +220,7 @@ new EventOption("Try again to assure the villagers that ghosts and spirits are n
         hour = 6;
 
         //move end of day message to screen
-        endDayText.position = new Vector3(512f, 450f, 0);
+        endDayText.position = new Vector3(sWidth, sHeight, 0);
     }
 
     //get's a random event from the list, removes from available, adds to queue

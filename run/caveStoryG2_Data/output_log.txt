@@ -1,0 +1,40 @@
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 980 Ti (ID=0x17c8)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+    Driver:   21.21.13.7653
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.068 seconds
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Keegan Taylor\Documents\ogCave\run\caveStoryG2_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3360x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.841069 ms
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.681597 ms
+
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 415.
+Total: 0.240415 ms (FindLiveObjects: 0.020439 ms CreateObjectMapping: 0.010475 ms MarkObjects: 0.206435 ms  DeleteObjects: 0.002810 ms)
+
+1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 38e0 -> priority: 1 
+  Thread -> id: 358 -> priority: 1 
